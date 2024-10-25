@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 import sys 
 sys.path.append('./')
-from .wallet_db import get_data,add_data
+from wallet_db import get_data,add_data
 
 app = FastAPI()
 
