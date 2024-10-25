@@ -35,7 +35,7 @@ class Wallet:
     def update_balance(self, amount):
         self.balance += amount
 
-# ---- Transaction Class ----
+
 class Transaction:
     def __init__(self, sender, recipient, amount):
         self.sender = sender

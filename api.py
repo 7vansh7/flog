@@ -1,24 +1,24 @@
 from fastapi import FastAPI
 import uvicorn
 
-# Create an instance of FastAPI
+
 app = FastAPI()
 
-# Root route
+
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the FastAPI server!"}
+    return {"message": "Fuck you, this is the home page"}
 
-# Another route that takes a parameter
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
+@app.get("/wallet_info/{Key}")
+def wallet_info(Key: str):
+    # add the logic to retrieve wallet info using public key from the DB
     return {"item_id": item_id, "query": q}
 
-# POST route example
-@app.post("/create_item/")
-def create_item(name: str, price: float):
-    return {"name": name, "price": price}
+@app.post("/create_wallet/")
+def create_new_wallet():
+        # add the logic to create private and public key, also store the info in a DB
+    return {"message":"wallet created successfully", "private_key":"","public_key":""}
 
-# If this file is the main module, run the FastAPI app using uvicorn
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run('api:app', host="127.0.0.1", port=8000, reload=True)
