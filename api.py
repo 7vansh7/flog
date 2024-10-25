@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 import uvicorn
-
+import sys 
+sys.path.append('./')
+from .wallet_db import get_data,add_data
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
-    return {"message": "Fuck you, this is the home page"}
+    return {"message": "Fuck you, this is void"}
 
 @app.get("/wallet_info/{Key}")
 def wallet_info(Key: str):
