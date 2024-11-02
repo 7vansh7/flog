@@ -34,7 +34,7 @@ async function add_holdings_to_wallet(event){
     let change = document.getElementById('text_change').value
     if (!private_key | !change) {
      console.error('Private key or change not found or empty');
-     alert('Private key empty')
+     alert('Private key or change empty')
      return
      }
      to_send = {private_key: private_key,change:change}

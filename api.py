@@ -2,10 +2,9 @@ from fastapi import FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 import sys 
-from pydantic import BaseModel
 sys.path.append('./')
 from wallet_db import create_user,get_user_holdings,add_user_holdings, get_all_public_keys
-
+from api_models import *
 
 app = FastAPI()
 
@@ -19,13 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-class Wallet_info_model(BaseModel):
-    private_key: str
-
-class Wallet_add_model(BaseModel):
-    private_key: str
-    change: str
 
 @app.get("/")
 def read_root():
@@ -51,6 +43,11 @@ def add_to_holdings(params:Wallet_add_model):
 def all_wallets_public_keys():
     keys = get_all_public_keys()
     return {"keys":keys}
+
+@app.post("/make_transaction")
+def make_transaction(data: Transaction_model):
+    
+    return {"message":"Tranction made"}
 
 if __name__ == "__main__":
     uvicorn.run('api:app', host="127.0.0.1", port=8000, reload=True)
