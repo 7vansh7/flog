@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Document</title>
+</head>
+<body>
+    <nav>
+        <a href="/index.html">Homepage</a>
+        <br>
+    </nav>
+
+<form action="" method="post" id="wallet_info">
+ <h2>Wallet Information</h2>
+ <label for="text">Private key</label>
+ <input type="text" name="text" id="text">
+ <button type="submit" >click</button>
+ <p id="wallet_info_ptag"></p>
+</form>
+
+<form id="wallet_holdings_add" action="" method="post">
+    <h2 >Add holdings to wallet</h2>
+
+    <label for="private_key_form_holdings">Private Key</label>
+    <input type="text" name="private_key_form_holdings" id="private_key_form_holdings">
+    <br> <br>
+    <label for="text_change">what do you want to add</label>
+    <input type="text" name="text_change" id="text_change">
+    
+    <br>
+    <button type="submit" >click</button>
+    <p id="holdings_add_confirmation"></p>
+</form>
+
+ <form id="create_wallet_form" >
+    <h2 >Create new wallet </h2>
+    <button type="submit" id="create_wallet_btn">click</button>
+    <p id="new_private_key"></p>
+    <p id="new_public_key"></p>
+</form>
+
+ <script src="wallet.js"></script>
+</body>
+
+</html>

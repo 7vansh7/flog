@@ -1,7 +1,7 @@
-import os
-import ecdsa
-import hashlib
-import json
-import time
+import sqlite3
 
-print(os.urandom(1))
+conn = sqlite3.connect('./wallets.db', check_same_thread=False)
+c = conn.cursor()
+
+c.execute("select * from wallets")
+print(c.fetchall())
