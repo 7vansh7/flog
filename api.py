@@ -3,12 +3,13 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 import sys 
 sys.path.append('./')
-from wallet_db import create_user,get_user_holdings,add_user_holdings, get_all_public_keys
+from wallet_db import create_user,get_user_holdings,add_user_holdings, get_all_public_keys, delete_from_wallet
+from transactions_db import add_transaction_to_DB,get_all_transactions
 from api_models import *
+
 
 app = FastAPI()
 
-# replace the get methods with the post methods
 origins = ["*"]
 
 app.add_middleware(
@@ -36,7 +37,7 @@ def create_new_wallet():
 
 @app.post("/wallet_add/")
 def add_to_holdings(params:Wallet_add_model):
-    add_user_holdings(params.private_key,params.change)
+    add_user_holdings(params.public_key,params.change)
     return {"message":f"added {params.change}"}
 
 @app.get("/all_public_keys")
@@ -44,10 +45,30 @@ def all_wallets_public_keys():
     keys = get_all_public_keys()
     return {"keys":keys}
 
-@app.post("/make_transaction")
+@app.post("/make_transaction/")
 def make_transaction(data: Transaction_model):
-    
-    return {"message":"Tranction made"}
+    private_key = data.private_key
+    receiver_public_key = data.receiver_public_key
+    change = data.change
+    sender_holdings = get_user_holdings(private_key)[0][0]
+    if change in sender_holdings:
+        delete_from_wallet(private_key,change)
+        add_user_holdings(receiver_public_key,change)
+        add_transaction_to_DB(private_key,receiver_public_key,change)
+        return {"message":"Transaction made successfully"}
+    else:
+        return {"message":"There is an error"}
+
+@app.get("/get_transactions/")
+def get_transactions():
+    transactions_array = get_all_transactions()
+    data = ''
+    for x in transactions_array:
+        public_key_sender = x[1]
+        public_key_receiver = x[2]
+        pair = f'{public_key_sender},{public_key_receiver};'
+        data += pair
+    return {"data":data}
 
 if __name__ == "__main__":
     uvicorn.run('api:app', host="127.0.0.1", port=8000, reload=True)

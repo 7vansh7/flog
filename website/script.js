@@ -1,75 +1,62 @@
-let wallet_info_form = document.getElementById('wallet_info')
-let holdings_add_form = document.getElementById('wallet_holdings_add')
-let create_wallet_form = document.getElementById('create_wallet_form')
-let wallet_add_ptag = document.getElementById('wallet_info_ptag')
-let private_key_ptag = document.getElementById('new_private_key')
-let public_key_ptag = document.getElementById('new_public_key')
-let holdings_add_confirmation = document.getElementById('holdings_add_confirmation')
+let table_wallets = document.getElementById('all_wallets')
+let table_transactions = document.getElementById('all_transactions')
 
-async function get_wallet_info(event){
-   event.preventDefault()
-   let private_key =  document.getElementById('text').value
-   if (!private_key) {
-    console.error('Private key not found or empty');
-    alert('Private key empty')
-    return
+let reload_button = document.getElementById('reload_button')
+
+async function get_all_wallets(event){
+    event.preventDefault()
+    let res = await fetch("http://127.0.0.1:8000/all_public_keys")
+    if(!res.ok){
+        console.error('Network issue')
+        return
     }
-   let holdings = await fetch(`http://127.0.0.1:8000/wallet_info/`,{
-    method: 'POST', 
-    headers: {
-        'Content-Type': 'application/json' 
-    },
-    body: JSON.stringify({private_key: private_key}) 
-})
-    if (!holdings.ok){
-        throw new Error('Network response was not ok');
-    }
-    let data = await holdings.json();
-    wallet_add_ptag.textContent = data.message
+    let keys = await res.json()
+    let keys_array = keys.keys.split(',')
+    let count = 1
+    keys_array.pop()
+    keys_array.forEach(element => {
+        let tr_element = document.createElement('tr')
+        let td_element = document.createElement('td')
+        let td_count = document.createElement('td')
+        let tr = table_wallets.appendChild(tr_element)
+        td_count.innerText = count
+        tr.appendChild(td_count)
+        td_element.innerText = element
+        tr.appendChild(td_element)
+        count ++
+    });
 }
 
-async function add_holdings_to_wallet(event){
+async function get_all_transactions(event){
     event.preventDefault()
-    let private_key =  document.getElementById('private_key_form_holdings').value
-    let change = document.getElementById('text_change').value
-    if (!private_key | !change) {
-     console.error('Private key or change not found or empty');
-     alert('Private key or change empty')
-     return
-     }
-     to_send = {private_key: private_key,change:change}
-     console.log(to_send)
-    let message = await fetch(`http://127.0.0.1:8000/wallet_add/`,{
-     method: 'POST', 
-     headers: {
-         'Content-Type': 'application/json' 
-     },
-     body: JSON.stringify(to_send) 
- })
-     if (!message.ok){
-         throw new Error('Network response was not ok',message.body);
-     }
-     let data = await message.json();
-     holdings_add_confirmation.textContent = data.message
- }
- 
-async function create_new_user(event){
-    event.preventDefault()
-    let ans = await fetch('http://127.0.0.1:8000/create_wallet/',{
-        method: 'GET', 
-        cache: 'no-store'
+    let res = await fetch("http://127.0.0.1:8000/get_transactions/")
+    if(!res.ok){
+        console.error('Network issue')
+        return
+    }
+    let data = await res.json()
+    data_array = data.data.split(';')
+    data_array.pop()
+    data_array.forEach(element => {
+        arr = element.split(',')
+        let sender = arr[0]
+        let receiver = arr[1]
+        let tr_element = document.createElement('tr')
+        let td_element_sender = document.createElement('td')
+        let td_element_receiver = document.createElement('td')
+        let arrow_td = document.createElement('td')
+        let tr = table_transactions.appendChild(tr_element)
+        td_element_sender.innerText = sender
+        tr.appendChild(td_element_sender)
+        arrow_td.innerText = '->'
+        tr.appendChild(arrow_td)
+        td_element_receiver.innerText = receiver
+        tr.appendChild(td_element_receiver)
     })
-    
-    if (!ans.ok){
-        throw new Error('Network response was not ok',ans.body);
-    }
-    let data = await ans.json();
-    alert(data.message)
-    public_key_ptag.innerText = data.public_key
-    private_key_ptag.textContent = data.private_key
 }
 
+reload_button.addEventListener('click',get_all_wallets)
+reload_button.addEventListener('click',get_all_transactions)
 
-wallet_info_form.addEventListener('submit', get_wallet_info)
-create_wallet_form.addEventListener('submit',create_new_user)
-holdings_add_form.addEventListener('submit',add_holdings_to_wallet)
+// table_wallets.appendChild(tr_elemenet)
+// table_wallets.appendChild(th_element)

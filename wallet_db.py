@@ -1,5 +1,4 @@
 import sqlite3
-import hashlib
 import os 
 import ecdsa
 
@@ -33,9 +32,9 @@ def get_user_holdings(private_key):
     holdings = c.fetchall()
     return holdings
 
-def add_user_holdings(private_key, change):
+def add_user_holdings(public_key, change):
            
-	c.execute("""UPDATE wallets SET holdings = COALESCE(holdings, '') || ? WHERE private_key = ?""", (change, private_key))
+	c.execute("""UPDATE wallets SET holdings = COALESCE(holdings, '') || ? WHERE public_key = ?""", (change, public_key))
 	conn.commit()
      
 def get_all_public_keys():
@@ -46,18 +45,25 @@ def get_all_public_keys():
         keys += f'{d[1]},'
      return keys
 
+def delete_from_wallet(private_key,change):
+    try:
+        c.execute("""
+                UPDATE wallets SET holdings = TRIM(REPLACE(holdings, ?, '')) 
+                    WHERE private_key = ? AND holdings LIKE '%' || ? || '%';
+                """,(change,private_key,change,))
+        conn.commit()
 
-# priv, pub = create_user()
-# add_user_holdings('3c7871139c08108affca26f46664d915299ebafc64c2667801c66393fb1e9fc6',"car")
-# holdings = get_user_holdings(private_key='3c7871139c08108affca26f46664d915299ebafc64c2667801c66393fb1e9fc6')
-# print(holdings[0][0])
+    except sqlite3.Error as e:
+        print(e)
 
-# c.execute("SELECT * FROM wallets WHERE private_key = ?", (priv,))
-# print(c.fetchall())
-
-# 3c7871139c08108affca26f46664d915299ebafc64c2667801c66393fb1e9fc6 
-
-#  04d8205ebf5aa6edbec154fe364cb3f91ec3ae521a27d8447f14853d75db0af4eb974a5b06cce25048a5f41dc4dda5e2e7d6135294fb0bbfaea1b8e42ad5a25546
+def get_public_key_from_private_key(private_key):
+     c.execute("SELECT public_key FROM wallets WHERE private_key = ?",(private_key,))
+     public_key_sender = c.fetchone()[0]
+     return public_key_sender
 
 
-data = get_all_public_keys()
+# c.execute("SELECT public_key FROM wallets WHERE private_key = ?",('1170f1d9b8df97e17ece686e4ce7155c66650a306a4a0dfb092f11e5e0bac1c4',))
+# print(c.fetchone()[0])
+
+# key =get_public_key_from_private_key('7fca3fb86280f346b2c4ed6b0d7d069e6f81902787033d8239a49b3681137ea9',)
+# print(key)
