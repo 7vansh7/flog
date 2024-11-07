@@ -3,11 +3,11 @@ from ecdsa import SigningKey, VerifyingKey, SECP256k1
 import hashlib
 
 
-conn = sqlite3.connect('./wallets.db', check_same_thread=False)
-c = conn.cursor()
+# conn = sqlite3.connect('./wallets.db', check_same_thread=False)
+# c = conn.cursor()
 
-c.execute("select * from wallets where public_key = ?",('041dbd159a642ec400e99e992585de03622da20151cb07dd78549566e5610555c6ba9d13818ab85f400d3f2a7674b8e4409273f2bd441c58862643230b7733a5e3',))
-print(c.fetchall())
+# c.execute("select * from wallets where public_key = ?",('041dbd159a642ec400e99e992585de03622da20151cb07dd78549566e5610555c6ba9d13818ab85f400d3f2a7674b8e4409273f2bd441c58862643230b7733a5e3',))
+# print(c.fetchall())
 
 
 # private_key_testing = '1170f1d9b8df97e17ece686e4ce7155c66650a306a4a0dfb092f11e5e0bac1c4'
@@ -42,5 +42,36 @@ print(c.fetchall())
 
 # MAKING a NFT
 
+conn = sqlite3.connect('./assets.db', check_same_thread=False)
+c = conn.cursor()
 
-house_nft = {};
+c.execute(""" 
+CREATE TABLE IF NOT EXISTS assets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    asset_info TEXT,
+    hash TEXT UNIQUE,
+    added_by TEXT
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)""")
+
+asset_info = {"type":"house", "address":"123xyzstreet","pincode":"120210","area":"100x50x50"}
+string = f'{asset_info}'
+hash_obj = hashlib.sha256()
+hash_obj.update(string.encode())
+hash = hash_obj.hexdigest()
+print(hash)
+# c.execute('insert into assets (asset_info,hash,added_by) values(?,?,?)',(str(asset_info),hash,'Vansh'))
+# conn.commit()
+c.execute("select * from assets")
+print(c.fetchall())
+
+def create_NFT(asset_info:dict):
+    hash_obj = hashlib.sha256()
+    hash_obj.update(str(asset_info).encode())
+    hash = hash_obj.hexdigest()
+    return hash
+
+def add_NFT_to_DB(asset_info:dict,hash:str,added_by:str):
+    c.execute('INSERT INTO assets (asset_info,hash,added_by) VALUES(?,?,?)',(str(asset_info),hash,added_by))
+    conn.commit()
+    return True
