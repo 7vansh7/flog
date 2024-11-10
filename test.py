@@ -54,16 +54,16 @@ CREATE TABLE IF NOT EXISTS assets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )""")
 
-asset_info = {"type":"house", "address":"123xyzstreet","pincode":"120210","area":"100x50x50"}
-string = f'{asset_info}'
-hash_obj = hashlib.sha256()
-hash_obj.update(string.encode())
-hash = hash_obj.hexdigest()
-print(hash)
-# c.execute('insert into assets (asset_info,hash,added_by) values(?,?,?)',(str(asset_info),hash,'Vansh'))
-# conn.commit()
-c.execute("select * from assets")
-print(c.fetchall())
+# asset_info = {"type":"house", "address":"123xyzstreet","pincode":"120210","area":"100x50x50"}
+# string = f'{asset_info}'
+# hash_obj = hashlib.sha256()
+# hash_obj.update(string.encode())
+# hash = hash_obj.hexdigest()
+# print(hash)
+# # c.execute('insert into assets (asset_info,hash,added_by) values(?,?,?)',(str(asset_info),hash,'Vansh'))
+# # conn.commit()
+# c.execute("select * from assets")
+# print(c.fetchall())
 
 def create_NFT(asset_info:dict):
     hash_obj = hashlib.sha256()
@@ -75,3 +75,11 @@ def add_NFT_to_DB(asset_info:dict,hash:str,added_by:str):
     c.execute('INSERT INTO assets (asset_info,hash,added_by) VALUES(?,?,?)',(str(asset_info),hash,added_by))
     conn.commit()
     return True
+
+# 04e330bd8c55132508e4e782376784bc90ab877449c1d93ca9f25276f84ec2d15f0969e9777fb14718971c578a5267f0c949848811b7c186d2c76d0cb15cf75cdd
+# 043201c77831f5a4ff5052a728aa7b9677bbda14ad4c2fc50901f211dff88f807f5409e2dd060f33db5f9c5a2fc9322b5beb7b05be93f1bbbf5793ecdd4a9b2184
+
+# 740769cd47d4812a9ac5d2df268f3e5c9f595c799cca078cb8b07871309947ed
+# 08137ce2d2fd200459f866ad1cb320fc3b5ddf4166d4fbb376376ba0c38c0d33
+
+print(create_NFT('genesis block'))
