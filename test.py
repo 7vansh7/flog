@@ -42,17 +42,17 @@ import hashlib
 
 # MAKING a NFT
 
-conn = sqlite3.connect('./assets.db', check_same_thread=False)
-c = conn.cursor()
+# conn = sqlite3.connect('./assets.db', check_same_thread=False)
+# c = conn.cursor()
 
-c.execute(""" 
-CREATE TABLE IF NOT EXISTS assets (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    asset_info TEXT,
-    hash TEXT UNIQUE,
-    added_by TEXT
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)""")
+# c.execute(""" 
+# CREATE TABLE IF NOT EXISTS assets (
+#     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#     asset_info TEXT,
+#     hash TEXT UNIQUE,
+#     added_by TEXT
+#     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+# )""")
 
 # asset_info = {"type":"house", "address":"123xyzstreet","pincode":"120210","area":"100x50x50"}
 # string = f'{asset_info}'
@@ -82,4 +82,4 @@ def add_NFT_to_DB(asset_info:dict,hash:str,added_by:str):
 # 740769cd47d4812a9ac5d2df268f3e5c9f595c799cca078cb8b07871309947ed
 # 08137ce2d2fd200459f866ad1cb320fc3b5ddf4166d4fbb376376ba0c38c0d33
 
-print(create_NFT('genesis block'))
+# print(create_NFT('genesis block'))
